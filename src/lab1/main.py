@@ -24,24 +24,50 @@ class Animal:
         self.on_died = []
         self.on_hungry = []
 
+        self.is_happy = []
+
+        self.last_clean_time = datetime.now()
+
     def eat(self):
-        pass
+        if self.meals_today < 5:
+            self.last_meal_time = datetime.now()
+            self.meals_today += 1
+            print(f"{self.name} поїв")
 
     def move(self):
-        pass
+        hours = (datetime.now() - self.last_meal_time).total_seconds() / 3600
+        if hours >= 8:
+            print(f"{self.name} занадто голодний, щоб бігти, тільки повзе")
+        else:
+            print(f"{self.name} бадьоро біжить")
+
+    def clean(self):
+        self.last_clean_time = datetime.now()
+        self.is_cleaned = True
+        print(f"{self.name} чистий")
 
     def check_status(self):
-        hours_passed = (datetime.now() - self.last_meal_time).total_seconds() / 3600
+        hours_since_cleaning = (
+            datetime.now() - self.last_clean_time
+        ).total_seconds() / 3600
+        hours_since_meal = (datetime.now() - self.last_meal_time).total_seconds() / 3600
 
         if not self.is_alive:
             return
 
-        if hours_passed >= 24:
+        if hours_since_meal >= 24:
             self.is_alive = False
             for callback in self.on_died:
                 callback(self)
-        elif hours_passed >= 8:
+        elif hours_since_meal >= 8:
             for callback in self.on_hungry:
+                callback(self)
+        if (
+            hours_since_meal <= 8
+            and hours_since_cleaning <= 24
+            or self.location == Location.WILD
+        ):
+            for callback in self.is_happy:
                 callback(self)
 
 
