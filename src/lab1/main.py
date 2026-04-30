@@ -29,3 +29,36 @@ class Animal:
 
     def move(self):
         pass
+
+    def check_status(self):
+        hours_passed = (datetime.now() - self.last_meal_time).total_seconds() / 3600
+
+        if not self.is_alive:
+            return
+
+        if hours_passed >= 24:
+            self.is_alive = False
+            for callback in self.on_died:
+                callback(self)
+        elif hours_passed >= 8:
+            for callback in self.on_hungry:
+                callback(self)
+
+
+class Dog(Animal):
+    def __init__(self, name):
+        super().__init__(name)
+
+
+class Owl(Animal):
+    def __init__(self, name):
+        super().__init__(name)
+
+        self.wings = 2
+
+
+class Lizard(Animal):
+    def __init__(self, name):
+        super().__init__(name)
+
+        self.paws = 6
