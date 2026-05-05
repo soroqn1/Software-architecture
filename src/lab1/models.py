@@ -61,9 +61,7 @@ class Animal:
         print(f"{self.name} тепер на волі")
 
     def check_status(self):
-        hours_since_cleaning = (
-            datetime.now() - self.last_clean_time
-        ).total_seconds() / 3600
+        hours_since_cleaning = (datetime.now() - self.last_clean_time).total_seconds() / 3600
         hours_since_meal = (datetime.now() - self.last_meal_time).total_seconds() / 3600
 
         if not self.is_alive:
@@ -94,6 +92,7 @@ class Owl(Animal):
     def __init__(self, name):
         super().__init__(name)
         self.wings = 2
+        self.paws = 2
 
 
 class Lizard(Animal):
