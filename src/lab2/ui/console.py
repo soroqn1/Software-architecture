@@ -35,6 +35,8 @@ class ConsoleUI:
                     self._simulate_time()
                 elif choice == "7":
                     self._check_status()
+                elif choice == "8":
+                    self._adopt_wild_animal()
                 elif choice == "0":
                     print("Вихід...")
                     break
@@ -45,13 +47,14 @@ class ConsoleUI:
 
     def _display_menu(self):
         print("\n--- Меню ---")
-        print("1. Додати/Прихистити тварину")
+        print("1. Додати тварину")
         print("2. Список моїх тварин")
         print("3. Нагодувати тварину")
         print("4. Почистити за твариною")
         print("5. Змусити тварину рухатися")
         print("6. Симулювати проходження часу")
         print("7. Перевірити стан усіх")
+        print("8. Прихистити тварину з волі")
         print("0. Вихід")
 
     def _add_animal(self):
@@ -115,6 +118,27 @@ class ConsoleUI:
             status = "Живий(а)" if a.is_alive else "Мертвий(а)"
             location = a.location.value
             print(f"[{a.name}] Стан: {status}, Місце: {location}")
+
+    def _adopt_wild_animal(self):
+        wild_animals = [a for a in self.all_animals if a not in self.owner.animals and a.is_alive]
+        if not wild_animals:
+            print("На волі немає живих тварин, яких можна прихистити.")
+            return
+
+        print("\nТварини на волі:")
+        for i, a in enumerate(wild_animals):
+            print(f"{i+1}. {a.name} ({a.__class__.__name__})")
+
+        try:
+            idx = int(input("Оберіть номер тварини для прихистку: ")) - 1
+            if 0 <= idx < len(wild_animals):
+                animal = wild_animals[idx]
+                self.owner.adopt_animal(animal)
+                print(f"{animal.name} тепер під опікою {self.owner.name}!")
+            else:
+                print("Невірний номер.")
+        except ValueError:
+            print("Невірний ввід.")
 
     def _select_animal(self) -> Optional[Animal]:
         self._list_animals()
